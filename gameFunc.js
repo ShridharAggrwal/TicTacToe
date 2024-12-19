@@ -10,22 +10,24 @@ document.addEventListener("DOMContentLoaded", () => {
   let gameBoard = ["", "", "", "", "", "", "", "", ""];
   let gameOver = false;
 
+  // Load scores from localStorage
   const loadScores = () => {
-    const storedScores = JSON.parse(localStorage.getItem('scores')); 
+    const storedScores = JSON.parse(localStorage.getItem('scores')); // Get scores from localStorage
     if (storedScores) {
-      scoreX.textContent = storedScores.X;  
-      scoreO.textContent = storedScores.O;  
+      scoreX.textContent = storedScores.X;  // Set stored score for X
+      scoreO.textContent = storedScores.O;  // Set stored score for O
     }
   };
 
-  loadScores();  
+  loadScores();  // Call to load scores when the game starts
 
-  const updateScores = () => {
+  // Update the scores in localStorage
+  const updateScoresInLocalStorage = () => {
     const scores = {
       X: parseInt(scoreX.textContent),
       O: parseInt(scoreO.textContent),
     };
-    localStorage.setItem('scores', JSON.stringify(scores)); 
+    localStorage.setItem('scores', JSON.stringify(scores)); // Store scores in localStorage
   };
 
   const firstPlayerChange = () => {
@@ -40,7 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const cell = event.target;
     const index = Array.from(cells).indexOf(cell);
 
-    if (gameOver || gameBoard[index] !== "") {
+    if (gameBoard[index] !== "") {
       alert("This cell is already occupied! Please choose a different one.");
       return;
     }
@@ -78,12 +80,12 @@ document.addEventListener("DOMContentLoaded", () => {
           scoreO.textContent = parseInt(scoreO.textContent) + 1;
         }
 
-        updateScores(); 
-        
+        updateScoresInLocalStorage(); // Update scores in localStorage
+
         gameOver = true;
         setTimeout(() => {
           alert(`Player ${currentPlayer} wins!`);
-          resetBoard(); 
+          resetBoard(); // Clear the board after a win
         }, 100);
         return;
       }
@@ -94,7 +96,7 @@ document.addEventListener("DOMContentLoaded", () => {
       gameOver = true;
       setTimeout(() => {
         alert("It's a draw!");
-        resetBoard(); 
+        resetBoard(); // Clear the board after a draw
       }, 100);
     }
   };
@@ -106,24 +108,25 @@ document.addEventListener("DOMContentLoaded", () => {
     statusText.textContent = `Player ${currentPlayer}'s turn`;
   };
 
+  // Reset the board and set turn back to the first player after a win/draw
   const resetBoard = () => {
     setTimeout(() => {
       gameBoard = ["", "", "", "", "", "", "", "", ""];
       cells.forEach((cell) => (cell.textContent = ""));
-      currentPlayer = firstPlayerSelect.value; 
+      currentPlayer = firstPlayerSelect.value; // Set current player to the first selected player
       statusText.textContent = `Player ${currentPlayer}'s turn`;
-      gameOver = false; 
-    }, 1000);
+      gameOver = false; // Reset gameOver flag
+    }, 1000); // Delay the reset slightly to give players time to see the result
   };
 
   resetButton.addEventListener("click", () => {
     resetGame();
-    localStorage.removeItem('scores');
-    scoreX.textContent = "0";
-    scoreO.textContent = "0";
+    localStorage.removeItem('scores'); // Clear stored scores
+    scoreX.textContent = "0"; // Reset Player X's score
+    scoreO.textContent = "0"; // Reset Player O's score
   });
 
   cells.forEach((cell) => {
     cell.addEventListener("click", cellClick);
-  });
+});
 });
